@@ -62,11 +62,13 @@ function Check () {
         I2C_LCD1602.ShowString("|** CORRECT! **|", 0, 0)
         I2C_LCD1602.ShowString("|**    :D    **|", 0, 1)
         enabled = 0
+        control_mode_on = 1
         music.playMelody("G B A G C5 B A B ", 120)
     } else {
         I2C_LCD1602.ShowString("|**INCORRECT!**|", 0, 0)
         I2C_LCD1602.ShowString("|**    >:(   **|", 0, 1)
         music.playMelody("C5 A B G A F G E ", 120)
+        control_mode_on = 0
     }
 }
 function startup__pad () {
@@ -106,16 +108,17 @@ function startup__pad () {
 }
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "ENABLED") {
-        enabled = 0
+        enabled = 1
     } else if (receivedString == "DISABLED") {
         enabled = 0
     } else if (receivedString == "ALARMOFF") {
-        enabled = 0
+        alarm_on = 0
     }
 })
 input.onButtonPressed(Button.B, function () {
     I2C_LCD1602.ShowString(input2, 0, 1)
 })
+let control_mode_on = 0
 let code = ""
 let alarm_on = 0
 let enabled = 0
@@ -139,6 +142,24 @@ basic.forever(function () {
         I2C_LCD1602.clear()
         cur = -1
         input2 = ""
+        control_mode_on = 0
+    }
+    // this will allow the user to turn on or off the alarms only after they put in the correct code
+    if (control_mode_on == 1) {
+        if (key_pressed.includes("B")) {
+            alarm_on = 0
+            radio.sendString("ALARMOFF")
+            control_mode_on = 0
+        } else if (key_pressed.includes("D")) {
+            if (enabled == 0) {
+                enabled = 1
+                radio.sendString("ENABLED")
+            } else {
+                enabled = 0
+                radio.sendString("DISABLED")
+            }
+            control_mode_on = 0
+        }
     }
     // detects if a system is open and sends alarm
     // 
