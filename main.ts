@@ -128,6 +128,9 @@ radio.setGroup(17)
 pins.setAudioPin(AnalogPin.P12)
 music.setVolume(255)
 startup__pad()
+loops.everyInterval(15000, function () {
+    radio.sendString("whatever")
+})
 basic.forever(function () {
     Type()
     if (key_pressed.includes("A")) {
@@ -148,7 +151,4 @@ basic.forever(function () {
         music.playMelody("F A F A F A F A ", 120)
     }
     basic.pause(100)
-})
-loops.everyInterval(30000, function () {
-    radio.sendString("whatever")
 })
