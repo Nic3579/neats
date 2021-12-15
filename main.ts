@@ -63,11 +63,9 @@ function Check () {
         I2C_LCD1602.ShowString("|**    :D    **|", 0, 1)
         enabled = 0
         control_mode_on = 1
-        music.playMelody("G B A G C5 B A B ", 120)
     } else {
         I2C_LCD1602.ShowString("|**INCORRECT!**|", 0, 0)
         I2C_LCD1602.ShowString("|**    >:(   **|", 0, 1)
-        music.playMelody("C5 A B G A F G E ", 120)
         control_mode_on = 0
     }
 }
@@ -169,7 +167,7 @@ basic.forever(function () {
     }
     // this is the alarm code
     if (enabled == 1 && alarm_on == 1) {
-        music.playMelody("F A F A F A F A ", 120)
+        I2C_LCD1602.ShowString("ALARM", 0, 0)
     }
     basic.pause(100)
 })
